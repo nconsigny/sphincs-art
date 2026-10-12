@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%2726 -86 372 372%27%3E%3Cpath d=%27M54%20176%20C42%20150%2054%20114%2096%20108%20C150%20102%20200%20106%20236%20104%20C246%2080%20252%2052%20262%2038%20C272%2024%20296%2026%20302%2042%20L305%2055%20L317%2072%20L310%2075%20L312%2083%20L306%2094%20L296%2097%20L302%20134%20C304%20146%20302%20150%20308%20152%20L382%20152%20C394%20152%20394%20176%20382%20176%20Z%27 fill=%27%23111%27/%3E%3C/svg%3E">
 <meta name="color-scheme" content="light">
-<title>A proposal for leanSphincs</title>
-<meta name="description" content="A proposal for leanSphincs: a hash-based signature with the shape of SLH-DSA-128-24, retuned for a 2^30 lifetime, fast signing, and pruned or threshold keys.">
+<title>A proposal for leanSphincs, with a 2^23 retune</title>
+<meta name="description" content="Unofficial fork of sphincs.art (Tom Wambsgans' leanSphincs proposal) with an added column by nconsigny: the same scheme retuned for 2^23 / 2^21 / 20K lifetimes at the fewest verification compressions.">
 <style>
 :root {
   color-scheme: light;
@@ -15,6 +15,7 @@
   --rule: #e8e8e8;
   --tree: #cfcfcf;
   --spicy: #8b1a1a;
+  --ours: #1d5a85;
   --sans: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -75,6 +76,10 @@ body:not([data-v="spicy"]) .s-only, body[data-v="spicy"] .v-only, body:not([data
 body[data-v="spicy"] .old::after { content: ""; position: absolute; left: -0.2em; right: -0.2em; top: 52%; border-top: 1.5px solid rgba(139, 26, 26, 0.45); transform: rotate(-16deg); pointer-events: none; }
 .new { color: var(--spicy); margin-left: 0.45em; }
 .titlerow { position: relative; }
+.forkbar { margin: 0 0 1.4rem; padding: 0 0 0.6rem; border-bottom: 1px solid var(--rule); color: var(--muted); font-size: 0.92rem; }
+.forkbar strong { color: var(--ours); font-weight: 600; }
+.params .ours, .tables h2.ours { color: var(--ours); }
+.params thead th.ours { font-weight: 600; }
 .toggle { position: absolute; left: calc(100% + 1.5rem); top: 50%; transform: translateY(-50%); z-index: 2; white-space: nowrap; display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: #fff; }
 .page { position: relative; }
 .notes { position: absolute; z-index: 3; visibility: hidden; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; color: var(--muted); white-space: nowrap; }
@@ -292,6 +297,12 @@ footer a + a { margin-left: 1.25rem; }
 @media (max-width: 374px) {
   .params table { font-size: 0.84rem; }
 }
+@media (max-width: 600px) {
+  /* Fork: the third column needs the value columns to wrap on phones */
+  .params thead th, .params td { white-space: normal; }
+  .params th, .params td { padding-right: 0.45rem; }
+  .params td.two { white-space: normal; }
+}
 @media (max-width: 359px) {
   html, body { font-size: 14px; }
 }
@@ -330,6 +341,8 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
 <body data-v="vanilla">
 <main>
 
+<p class="forkbar"><strong>Unofficial fork</strong> of <a href="https://sphincs.art">sphincs.art</a>, the leanSphincs proposal by Tom Wambsgans. The blue <em>This fork</em> column and table are added by <a href="https://github.com/nconsigny">nconsigny</a>; their lifetimes are estimates, not proved in Lean. Everything else is the original.</p>
+
 <div class="page">
   <div class="text">
     <header>
@@ -341,19 +354,19 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
     <div class="params">
       <div class="scroll">
       <table>
-        <thead><tr><th></th><th><a href="https://csrc.nist.gov/pubs/sp/800/230/ipd">SLH-DSA-128-24</a></th><th>leanSphincs</th></tr></thead>
+        <thead><tr><th></th><th><a href="https://csrc.nist.gov/pubs/sp/800/230/ipd">SLH-DSA-128-24</a></th><th>leanSphincs</th><th class="ours">This fork<span class="info r" tabindex="0" data-tip="Added in this fork by nconsigny, not part of the proposal.&#10;Same scheme: one XMSS layer, WOTS+C (64 chains of length 4,&#10;target sum 128), FORS with no root hash, pruning.&#10;Retuned for 2^23 / 2^21 / 20K lifetimes at the fewest&#10;verification compressions.">i</span></th></tr></thead>
         <tbody>
-          <tr><th><i>h</i></th><td>22</td><td>26</td></tr>
-          <tr><th><i>k</i></th><td>6</td><td><span class="old">24</span><span class="new s-only">8</span></td></tr>
-          <tr><th><i>a</i></th><td>24</td><td><span class="old">10</span><span class="new s-only">4 + 3</span></td></tr>
-          <tr><th>OTS</th><td>WOTS+</td><td>WOTS+C</td></tr>
-          <tr><th>FTS</th><td>FORS</td><td class="two"><span class="old">FORS</span><span class="new s-only">WOTS forest</span><span class="info r s-only" tabindex="0" data-tip="8 trees of height 4. Each leaf is H(R₀, R₁),&#10;the roots of two subtrees of height 3&#10;over WOTS keys of 6 chains of length 5,&#10;with target sum 5">i</span></td></tr>
-          <tr><th>Hash</th><td>SHA-2 or SHAKE</td><td>BLAKE2s<span class="info" tabindex="0" data-tip="A placeholder: SHA-2 would also work">i</span></td></tr>
+          <tr><th><i>h</i></th><td>22</td><td>26</td><td class="ours">24</td></tr>
+          <tr><th><i>k</i></th><td>6</td><td><span class="old">24</span><span class="new s-only">8</span></td><td class="ours">17</td></tr>
+          <tr><th><i>a</i></th><td>24</td><td><span class="old">10</span><span class="new s-only">4 + 3</span></td><td class="ours">10</td></tr>
+          <tr><th>OTS</th><td>WOTS+</td><td>WOTS+C</td><td class="ours">WOTS+C</td></tr>
+          <tr><th>FTS</th><td>FORS</td><td class="two"><span class="old">FORS</span><span class="new s-only">WOTS forest</span><span class="info r s-only" tabindex="0" data-tip="8 trees of height 4. Each leaf is H(R₀, R₁),&#10;the roots of two subtrees of height 3&#10;over WOTS keys of 6 chains of length 5,&#10;with target sum 5">i</span></td><td class="ours">FORS</td></tr>
+          <tr><th>Hash</th><td>SHA-2 or SHAKE</td><td>BLAKE2s<span class="info" tabindex="0" data-tip="A placeholder: SHA-2 would also work">i</span></td><td class="ours">BLAKE2s</td></tr>
         </tbody>
         <tbody class="out">
-          <tr><th>Lifetime</th><td>2<sup>24</sup></td><td>2<sup>30</sup><span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span></td></tr>
-          <tr><th>Size</th><td>3,856 bytes</td><td><span class="old">5,684</span><span class="new s-only">4,276</span> bytes</td></tr>
-          <tr><th>Verification<br><span class="unit">(compressions)</span></th><td>296</td><td><span class="old">373</span><span class="new s-only">307</span></td></tr>
+          <tr><th>Lifetime</th><td>2<sup>24</sup></td><td>2<sup>30</sup><span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span></td><td class="ours">2<sup>23</sup><span class="info r" tabindex="0" data-tip="Design target for the full tree.&#10;Cover estimate (note, section 3), not proved in Lean:&#10;3.1·10⁷ ≈ 2^24.9 signatures at 127 bits.">i</span></td></tr>
+          <tr><th>Size</th><td>3,856 bytes</td><td><span class="old">5,684</span><span class="new s-only">4,276</span> bytes</td><td class="ours">4,420 bytes</td></tr>
+          <tr><th>Verification<br><span class="unit">(compressions)</span></th><td>296</td><td><span class="old">373</span><span class="new s-only">307</span></td><td class="ours">287<span class="info r" tabindex="0" data-tip="digest 2 + FORS 179 + WOTS+C 82 + path 24">i</span></td></tr>
         </tbody>
       </table>
       </div>
@@ -722,7 +735,21 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
         </tbody>
       </table>
       </div>
-      <h2>Threshold, <i>t</i>-of-<i>n</i></h2>
+      <h2 class="ours">One signer, this fork</h2>
+      <div class="scroll">
+      <table class="cmp cards">
+        <colgroup><col class="label"><col><col><col></colgroup>
+        <thead>
+          <tr><th></th><th><div class="hd">Light<span class="dev">Ledger Nano S+<span class="info" tabindex="0" data-tip="33K compressions per second">i</span></span></div></th><th><div class="hd">Standard<span class="dev">weak CPU<span class="info" tabindex="0" data-tip="128M compressions per second">i</span></span></div></th><th><div class="hd">Full<span class="dev">powerful CPU<span class="info" tabindex="0" data-tip="1B compressions per second">i</span></span></div></th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Lifetime<span class="info" tabindex="0" data-tip="Targets. Each clears its target by ≥ 25% under the cover&#10;estimate of the note (section 3) at 127 bits;&#10;not proved in Lean.">i</span></th><td data-l="Lifetime"><div>20K signatures <span class="st">(subtree of 2<sup>13</sup>, estimate 34.9K)</span></div></td><td data-l="Lifetime"><div>2.1M signatures <span class="st">(subtree of 2<sup>20</sup>, estimate 2.67M)</span></div></td><td data-l="Lifetime"><div>8.4M signatures <span class="st">(full tree of 2<sup>24</sup>, estimate 30.9M)</span></div></td></tr>
+          <tr><th>Key generation</th><td data-l="Key generation"><div class="hd"><span>1.98M compressions</span><span class="ex">60&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span>254M compressions</span><span class="ex">2.0&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span>4.06B compressions</span><span class="ex">4.1&nbsp;s</span></div></td></tr>
+          <tr><th>Signing</th><td data-l="Signing"><div class="hd"><span>63K compressions<span class="br">, </span>16&nbsp;KiB cache</span><span class="ex">1.9&nbsp;s</span></div></td><td data-l="Signing"><div class="hd"><span>66K compressions<span class="br">, </span>1&nbsp;MiB cache</span><span class="ex">0.5&nbsp;ms</span></div></td><td data-l="Signing"><div class="hd"><span>66K compressions<span class="br">, </span>16&nbsp;MiB cache</span><span class="ex">0.07&nbsp;ms</span></div></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <h2>Threshold, <i>t</i>-of-<i>n</i><span class="info" tabindex="0" data-tip="The proposal's parameter set only;&#10;not recomputed for this fork">i</span></h2>
       <p class="lead">Adapted from <a href="https://eprint.iacr.org/2026/2142">PRAWNS</a>: a one-time ceremony at keygen precomputes every hash of a secret, run either as an honest-majority MPC among the operators (DKG) or by a trusted dealer; signing then needs no MPC (<span class="old">432</span><span class="new s-only">≈ 750</span> bytes per signer, 3 rounds), and is secure against <i>t</i>&nbsp;&minus;&nbsp;1 malicious signers (with abort).</p>
       <div class="split">
         <div>
@@ -760,6 +787,7 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
 
 <footer>
   <p><a href="https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/releases/download/doc-latest/leanSPHINCS.pdf">Note</a><a href="https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/tree/main">Code</a><a href="https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/tree/main/formal/sphincs">Proofs</a></p>
+  <p>Fork: <a href="https://github.com/nconsigny/sphincs-art">source</a><a href="https://github.com/nconsigny/sphincs-art/blob/main/scripts/sweep_leansphincs_pruned.py">parameter search</a></p>
 </footer>
 
 </main>
