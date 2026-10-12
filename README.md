@@ -2,19 +2,19 @@
 
 Unofficial fork of [sphincs.art](https://sphincs.art), Tom Wambsgans' leanSphincs proposal
 ([source](https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/tree/main/site)), with one
-addition: a **This fork** column and a **One signer, this fork** table.
+addition: a **leanSphincs-23** column and a **One signer, leanSphincs-23** table.
 
 Live page: https://nconsigny.github.io/sphincs-art/
 
 Everything else on the page — the proposal, the vanilla/spicy variants, the diagram, the threshold
-section — is the original. The first commit is an unmodified copy of upstream; the second holds the changes.
+section — is the original. The first commit is an unmodified copy of upstream; the later ones hold the changes.
 
-## The added column
+## leanSphincs-23
 
 Same scheme (one XMSS layer, WOTS+C, FORS with no root hash, hypertree pruning, BLAKE2s compressions),
 retuned for lower lifetimes and the fewest verification compressions:
 
-| | leanSphincs | This fork |
+| | leanSphincs | leanSphincs-23 |
 |---|---|---|
 | h, k, a | 26, 24, 10 | 24, 17, 10 |
 | WOTS+C | 64 chains of length 4, target sum 120 | 64 chains of length 4, target sum 128 |
