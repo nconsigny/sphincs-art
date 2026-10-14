@@ -58,6 +58,8 @@ variant. Keygen has to hash every FORS secret inside an MPC; four changes cut th
 - **Smaller FORS trees.** k = 17, a = 10: 17K leaves per instance instead of 53K with k = 13, a = 12.
 
 For a 2-of-3 key lasting about 100K signatures, keygen traffic per operator drops from 2,964 GB to 223 GB.
+Applied to the proposal's own set, the same changes cut its traffic by about a third (2-of-3 with 2^12 kept
+instances: 172 GB to 108 GB); the page shows these figures in green next to the original threshold table.
 Lifetimes are rated with a 25% margin under the cover estimate, with balanced use; traffic uses the
 proposal's measured bytes per MPC leaf.
 

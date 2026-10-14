@@ -16,6 +16,7 @@
   --tree: #cfcfcf;
   --spicy: #8b1a1a;
   --ours: #1d5a85;
+  --green: #1f7a3c;
   --sans: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -85,6 +86,9 @@ body[data-v="spicy"] .old::after { content: ""; position: absolute; left: -0.2em
 .tables ul.how li { margin: 0.2rem 0; }
 .tables ul.how strong { color: var(--ink); font-weight: 600; }
 .tables h3.ours { color: var(--ours); }
+.opt { color: var(--green); margin-left: 0.45em; white-space: nowrap; }
+.tables .lead.opt-note { color: var(--green); }
+@media (max-width: 600px) { .tables .groups .opt { display: block; margin-left: 0; } }
 .toggle { position: absolute; left: calc(100% + 1.5rem); top: 50%; transform: translateY(-50%); z-index: 2; white-space: nowrap; display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: #fff; }
 .page { position: relative; }
 .notes { position: absolute; z-index: 3; visibility: hidden; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; color: var(--muted); white-space: nowrap; }
@@ -756,6 +760,7 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
       </div>
       <h2>Threshold, <i>t</i>-of-<i>n</i><span class="info" tabindex="0" data-tip="leanSphincs parameters;&#10;leanSphincs-23 is below">i</span></h2>
       <p class="lead">Adapted from <a href="https://eprint.iacr.org/2026/2142">PRAWNS</a>: a one-time ceremony at keygen precomputes every hash of a secret, run either as an honest-majority MPC among the operators (DKG) or by a trusted dealer; signing then needs no MPC (<span class="old">432</span><span class="new s-only">≈ 750</span> bytes per signer, 3 rounds), and is secure against <i>t</i>&nbsp;&minus;&nbsp;1 malicious signers (with abort).</p>
+      <p class="lead opt-note v-only">In green: the same subtrees with the leanSphincs-23 threshold changes described below (sparse FORS, no MPC for the one-time keys). Balanced use also stretches each lifetime by about 20%.</p>
       <div class="split">
         <div>
           <h3>With DKG</h3>
@@ -765,9 +770,9 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
             <colgroup><col class="label"><col><col><col></colgroup>
             <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th><span class="old">7.5K</span><span class="new s-only">8.8K</span><span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>8</sup>)</span></th><th><span class="old">28.6K</span><span class="new s-only">33.4K</span><span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>10</sup>)</span></th><th><span class="old">108K</span><span class="new s-only">126K</span><span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>12</sup>)</span></th></tr></thead>
             <tbody>
-              <tr><th>2-of-3</th><td><span class="old">11</span><span class="new s-only">21</span>&nbsp;GB</td><td><span class="old">43</span><span class="new s-only">85</span>&nbsp;GB</td><td><span class="old">172</span><span class="new s-only">342</span>&nbsp;GB</td></tr>
-              <tr><th>3-of-5</th><td><span class="old">13</span><span class="new s-only">26</span>&nbsp;GB</td><td><span class="old">52</span><span class="new s-only">103</span>&nbsp;GB</td><td><span class="old">207</span><span class="new s-only">410</span>&nbsp;GB</td></tr>
-              <tr><th>4-of-7</th><td><span class="old">14</span><span class="new s-only">27</span>&nbsp;GB</td><td><span class="old">55</span><span class="new s-only">110</span>&nbsp;GB</td><td><span class="old">222</span><span class="new s-only">440</span>&nbsp;GB</td></tr>
+              <tr><th>2-of-3</th><td><span class="old">11</span><span class="new s-only">21</span>&nbsp;GB<span class="opt v-only">7.6&nbsp;GB</span></td><td><span class="old">43</span><span class="new s-only">85</span>&nbsp;GB<span class="opt v-only">29&nbsp;GB</span></td><td><span class="old">172</span><span class="new s-only">342</span>&nbsp;GB<span class="opt v-only">108&nbsp;GB</span></td></tr>
+              <tr><th>3-of-5</th><td><span class="old">13</span><span class="new s-only">26</span>&nbsp;GB<span class="opt v-only">9.1&nbsp;GB</span></td><td><span class="old">52</span><span class="new s-only">103</span>&nbsp;GB<span class="opt v-only">34&nbsp;GB</span></td><td><span class="old">207</span><span class="new s-only">410</span>&nbsp;GB<span class="opt v-only">129&nbsp;GB</span></td></tr>
+              <tr><th>4-of-7</th><td><span class="old">14</span><span class="new s-only">27</span>&nbsp;GB<span class="opt v-only">9.7&nbsp;GB</span></td><td><span class="old">55</span><span class="new s-only">110</span>&nbsp;GB<span class="opt v-only">37&nbsp;GB</span></td><td><span class="old">222</span><span class="new s-only">440</span>&nbsp;GB<span class="opt v-only">139&nbsp;GB</span></td></tr>
             </tbody>
           </table>
           </div>
@@ -780,7 +785,7 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
             <colgroup><col class="label"><col><col><col></colgroup>
             <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th><span class="old">28.6K</span><span class="new s-only">33.4K</span><br><span class="sub">(subtree of 2<sup>10</sup>)</span></th><th><span class="old">108K</span><span class="new s-only">126K</span><br><span class="sub">(subtree of 2<sup>12</sup>)</span></th><th><span class="old">410K</span><span class="new s-only">480K</span><br><span class="sub">(subtree of 2<sup>14</sup>)</span></th></tr></thead>
             <tbody>
-              <tr><th>Public data</th><td><span class="old">404&nbsp;MB</span><span class="new s-only">806&nbsp;MB</span></td><td><span class="old">1.6&nbsp;GB</span><span class="new s-only">3.2&nbsp;GB</span></td><td><span class="old">6.5&nbsp;GB</span><span class="new s-only">12.9&nbsp;GB</span></td></tr>
+              <tr><th>Public data</th><td><span class="old">404&nbsp;MB</span><span class="new s-only">806&nbsp;MB</span><span class="opt v-only">270&nbsp;MB</span></td><td><span class="old">1.6&nbsp;GB</span><span class="new s-only">3.2&nbsp;GB</span><span class="opt v-only">1.0&nbsp;GB</span></td><td><span class="old">6.5&nbsp;GB</span><span class="new s-only">12.9&nbsp;GB</span><span class="opt v-only">3.8&nbsp;GB</span></td></tr>
             </tbody>
           </table>
           </div>
