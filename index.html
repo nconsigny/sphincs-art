@@ -365,7 +365,7 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
       <table>
         <thead><tr><th></th><th><a href="https://csrc.nist.gov/pubs/sp/800/230/ipd">SLH-DSA-128-24</a></th><th>leanSphincs</th><th class="ours">leanSphincs-23<span class="info r s-only" tabindex="0" data-tip="Same scheme as spicy leanSphincs: one XMSS layer,&#10;WOTS+C (64 chains of length 4, target sum 128),&#10;a WOTS forest instead of FORS, pruning.&#10;Retuned for 2^23 / 2^21 / 20K lifetimes, with a 5 s&#10;Ledger signing budget for a smaller signature.">i</span><span class="info r v-only" tabindex="0" data-tip="Same scheme as leanSphincs: one XMSS layer, WOTS+C (64 chains of length 4,&#10;target sum 128), FORS with no root hash, pruning.&#10;Retuned for 2^23 / 2^21 / 20K lifetimes at the fewest&#10;verification compressions and smallest signature,&#10;with a 5 s Ledger signing budget.">i</span></th></tr></thead>
         <tbody>
-          <tr><th><i>h</i></th><td>22</td><td>26</td><td class="ours"><span class="old">25</span><span class="new s-only">24</span></td></tr>
+          <tr><th><i>h</i></th><td>22</td><td>26</td><td class="ours"><span class="old">26</span><span class="new s-only">25</span></td></tr>
           <tr><th><i>k</i></th><td>6</td><td><span class="old">24</span><span class="new s-only">8</span></td><td class="ours"><span class="old">13</span><span class="new s-only">3</span></td></tr>
           <tr><th><i>a</i></th><td>24</td><td><span class="old">10</span><span class="new s-only">4 + 3</span></td><td class="ours"><span class="old">12</span><span class="new s-only">4 + 5</span></td></tr>
           <tr><th>OTS</th><td>WOTS+</td><td>WOTS+C</td><td class="ours">WOTS+C</td></tr>
@@ -373,9 +373,9 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
           <tr><th>Hash</th><td>SHA-2 or SHAKE</td><td>BLAKE2s<span class="info" tabindex="0" data-tip="A placeholder: SHA-2 would also work">i</span></td><td class="ours">BLAKE2s</td></tr>
         </tbody>
         <tbody class="out">
-          <tr><th>Lifetime</th><td>2<sup>24</sup></td><td>2<sup>30</sup><span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span></td><td class="ours">2<sup>23</sup><span class="info r s-only" tabindex="0" data-tip="Design target for the full tree.&#10;Cover estimate (note, section 3), not proved in Lean:&#10;2.4·10⁷ ≈ 2^24.5 signatures at 127 bits.">i</span><span class="info r v-only" tabindex="0" data-tip="Design target for the full tree.&#10;Cover estimate (note, section 3), not proved in Lean:&#10;5.4·10⁷ ≈ 2^25.6 signatures at 127 bits.">i</span></td></tr>
-          <tr><th>Size</th><td>3,856 bytes</td><td><span class="old">5,684</span><span class="new s-only">4,276</span> bytes</td><td class="ours"><span class="old">4,148</span><span class="new s-only">3,636</span> bytes</td></tr>
-          <tr><th>Verification<br><span class="unit">(compressions)</span></th><td>296</td><td><span class="old">373</span><span class="new s-only">307</span></td><td class="ours"><span class="old">272</span><span class="new s-only">224</span><span class="info r v-only" tabindex="0" data-tip="digest 2 + FORS 163 + WOTS+C 82 + path 25">i</span><span class="info r s-only" tabindex="0" data-tip="digest 2 + forest 116 + WOTS+C 82 + path 24">i</span></td></tr>
+          <tr><th>Lifetime</th><td>2<sup>24</sup></td><td>2<sup>30</sup><span class="info" tabindex="0" data-tip="&gt; 127 bits of security, proved in Lean">i</span></td><td class="ours"><span class="old">2<sup>26</sup></span><span class="new s-only">2<sup>25</sup></span><span class="info r s-only" tabindex="0" data-tip="Full tree, rated with a 25% margin under the cover&#10;estimate (note, section 3); not proved in Lean.&#10;Estimate 4.9·10⁷ ≈ 2^25.5 signatures at 127 bits.&#10;Targets per device: 2^23 / 2^21 / 20K.">i</span><span class="info r v-only" tabindex="0" data-tip="Full tree, rated with a 25% margin under the cover&#10;estimate (note, section 3); not proved in Lean.&#10;Estimate 1.08·10⁸ ≈ 2^26.7 signatures at 127 bits.&#10;Targets per device: 2^23 / 2^21 / 20K.">i</span></td></tr>
+          <tr><th>Size</th><td>3,856 bytes</td><td><span class="old">5,684</span><span class="new s-only">4,276</span> bytes</td><td class="ours"><span class="old">4,164</span><span class="new s-only">3,652</span> bytes</td></tr>
+          <tr><th>Verification<br><span class="unit">(compressions)</span></th><td>296</td><td><span class="old">373</span><span class="new s-only">307</span></td><td class="ours"><span class="old">273</span><span class="new s-only">225</span><span class="info r v-only" tabindex="0" data-tip="digest 2 + FORS 163 + WOTS+C 82 + path 26">i</span><span class="info r s-only" tabindex="0" data-tip="digest 2 + forest 116 + WOTS+C 82 + path 25">i</span></td></tr>
         </tbody>
       </table>
       </div>
@@ -752,9 +752,9 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
           <tr><th></th><th><div class="hd">Light<span class="dev">Ledger Nano S+<span class="info" tabindex="0" data-tip="33K compressions per second">i</span></span></div></th><th><div class="hd">Standard<span class="dev">weak CPU<span class="info" tabindex="0" data-tip="128M compressions per second">i</span></span></div></th><th><div class="hd">Full<span class="dev">powerful CPU<span class="info" tabindex="0" data-tip="1B compressions per second">i</span></span></div></th></tr>
         </thead>
         <tbody>
-          <tr><th>Lifetime<span class="info" tabindex="0" data-tip="Targets. Each clears its target by ≥ 25% under the cover&#10;estimate of the note (section 3) at 127 bits;&#10;not proved in Lean.">i</span></th><td data-l="Lifetime"><div>20K signatures <span class="st">(subtree of 2<sup>13</sup>, est. <span class="old">40.2K</span><span class="new s-only">59.0K</span>)</span></div></td><td data-l="Lifetime"><div>2.1M signatures <span class="st">(subtree of 2<sup>20</sup>, est. <span class="old">2.78M</span><span class="new s-only">3.03M</span>)</span></div></td><td data-l="Lifetime"><div>8.4M signatures <span class="st">(full tree of <span class="old">2<sup>25</sup></span><span class="new s-only">2<sup>24</sup></span>, est. <span class="old">54.0M</span><span class="new s-only">24.7M</span>)</span></div></td></tr>
-          <tr><th>Key generation</th><td data-l="Key generation"><div class="hd"><span>1.98M compressions</span><span class="ex">60&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span>254M compressions</span><span class="ex">2.0&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span><span class="old">8.12B</span><span class="new s-only">4.06B</span> compressions</span><span class="ex"><span class="old">8.1</span><span class="new s-only">4.1</span>&nbsp;s</span></div></td></tr>
-          <tr><th>Signing</th><td data-l="Signing"><div class="hd"><span><span class="old">155K</span><span class="new s-only">144K</span> compressions<span class="br">, </span>16&nbsp;KiB cache</span><span class="ex"><span class="old">4.7</span><span class="new s-only">4.4</span>&nbsp;s</span></div></td><td data-l="Signing"><div class="hd"><span><span class="old">156K</span><span class="new s-only">147K</span> compressions<span class="br">, </span>1&nbsp;MiB cache</span><span class="ex"><span class="old">1.2</span><span class="new s-only">1.1</span>&nbsp;ms</span></div></td><td data-l="Signing"><div class="hd"><span><span class="old">163K</span><span class="new s-only">147K</span> compressions<span class="br">, </span>16&nbsp;MiB cache</span><span class="ex"><span class="old">0.16</span><span class="new s-only">0.15</span>&nbsp;ms</span></div></td></tr>
+          <tr><th>Lifetime<span class="info" tabindex="0" data-tip="Targets. Each clears its target by ≥ 25% under the cover&#10;estimate of the note (section 3) at 127 bits;&#10;not proved in Lean.">i</span></th><td data-l="Lifetime"><div>20K signatures <span class="st">(subtree of 2<sup>13</sup>, est. <span class="old">43.7K</span><span class="new s-only">66.0K</span>)</span></div></td><td data-l="Lifetime"><div>2.1M signatures <span class="st">(subtree of 2<sup>20</sup>, est. <span class="old">3.05M</span><span class="new s-only">3.51M</span>)</span></div></td><td data-l="Lifetime"><div>8.4M signatures <span class="st">(full tree of <span class="old">2<sup>26</sup></span><span class="new s-only">2<sup>25</sup></span>, est. <span class="old">108M</span><span class="new s-only">49.5M</span>)</span></div></td></tr>
+          <tr><th>Key generation</th><td data-l="Key generation"><div class="hd"><span>1.98M compressions</span><span class="ex">60&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span>254M compressions</span><span class="ex">2.0&nbsp;s</span></div></td><td data-l="Key generation"><div class="hd"><span><span class="old">16.2B</span><span class="new s-only">8.12B</span> compressions</span><span class="ex"><span class="old">16</span><span class="new s-only">8.1</span>&nbsp;s</span></div></td></tr>
+          <tr><th>Signing</th><td data-l="Signing"><div class="hd"><span><span class="old">159K</span><span class="new s-only">146K</span> compressions<span class="br">, </span>16&nbsp;KiB cache</span><span class="ex"><span class="old">4.8</span><span class="new s-only">4.4</span>&nbsp;s</span></div></td><td data-l="Signing"><div class="hd"><span><span class="old">156K</span><span class="new s-only">147K</span> compressions<span class="br">, </span>1&nbsp;MiB cache</span><span class="ex"><span class="old">1.2</span><span class="new s-only">1.1</span>&nbsp;ms</span></div></td><td data-l="Signing"><div class="hd"><span><span class="old">179K</span><span class="new s-only">155K</span> compressions<span class="br">, </span>16&nbsp;MiB cache</span><span class="ex"><span class="old">0.18</span><span class="new s-only">0.15</span>&nbsp;ms</span></div></td></tr>
         </tbody>
       </table>
       </div>
@@ -796,9 +796,9 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
       <ul class="how">
         <li><strong>No secret for the one-time keys.</strong> Each WOTS+C key only ever signs its own FORS root, which is known at keygen, so its signature values come from a joint coin toss: no MPC for that layer.</li>
         <li><strong>Sparse FORS.</strong> Only about 40% of the FORS leaves get secrets; the others are random values with no known preimage. Signers grind the randomizer (about 2<sup>30</sup> hashes, a second on a server) until the message picks real leaves. About 2.5&times; less MPC, unchanged verifier.</li>
-        <li><strong>Balanced use.</strong> The signing service logs every signature and grinds to an instance used fewer than a set number of times, so no instance gets unlucky and a subtree lasts about 1.7&times; longer.</li>
+        <li><strong>Balanced use.</strong> The signing service logs every signature and grinds to an instance used fewer than a set number of times, so no instance gets unlucky and a subtree lasts about 1.5&times; longer.</li>
       </ul>
-      <p class="lead">For a 2-of-3 key lasting about 100K signatures, keygen traffic drops from 2,975&nbsp;GB to 538&nbsp;GB per operator.</p>
+      <p class="lead">For a 2-of-3 key lasting about 100K signatures, keygen traffic drops from 2,975&nbsp;GB to 568&nbsp;GB per operator.</p>
       <div class="split">
         <div>
           <h3 class="ours">With DKG</h3>
@@ -806,11 +806,11 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
           <div class="scroll">
           <table class="cmp groups">
             <colgroup><col class="label"><col><col><col></colgroup>
-            <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="Rated with a 25% margin under the cover estimate,&#10;with balanced use; not proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th>7.7K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>10</sup>)</span></th><th>28.0K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>12</sup>)</span></th><th>99.6K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>14</sup>)</span></th></tr></thead>
+            <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="Rated with a 25% margin under the cover estimate,&#10;with balanced use; not proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th>8.6K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>10</sup>)</span></th><th>28.0K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>12</sup>)</span></th><th>99.6K<span class="m-only"> signatures </span><br><span class="sub">(subtree of 2<sup>14</sup>)</span></th></tr></thead>
             <tbody>
-              <tr><th>2-of-3</th><td>42&nbsp;GB</td><td>150&nbsp;GB</td><td>538&nbsp;GB</td></tr>
-              <tr><th>3-of-5</th><td>50&nbsp;GB</td><td>180&nbsp;GB</td><td>646&nbsp;GB</td></tr>
-              <tr><th>4-of-7</th><td>54&nbsp;GB</td><td>193&nbsp;GB</td><td>693&nbsp;GB</td></tr>
+              <tr><th>2-of-3</th><td>44&nbsp;GB</td><td>158&nbsp;GB</td><td>568&nbsp;GB</td></tr>
+              <tr><th>3-of-5</th><td>53&nbsp;GB</td><td>189&nbsp;GB</td><td>681&nbsp;GB</td></tr>
+              <tr><th>4-of-7</th><td>57&nbsp;GB</td><td>203&nbsp;GB</td><td>730&nbsp;GB</td></tr>
             </tbody>
           </table>
           </div>
@@ -821,9 +821,9 @@ body[data-v="spicy"] .sphinx .faces { filter: url(#sphinx-spicy); }
           <div class="scroll">
           <table class="cmp pairs">
             <colgroup><col class="label"><col><col><col></colgroup>
-            <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="Rated with a 25% margin under the cover estimate,&#10;with balanced use; not proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th>28.0K<br><span class="sub">(subtree of 2<sup>12</sup>)</span></th><th>99.6K<br><span class="sub">(subtree of 2<sup>14</sup>)</span></th><th>349K<br><span class="sub">(subtree of 2<sup>16</sup>)</span></th></tr></thead>
+            <thead><tr><th>Lifetime<span class="info" tabindex="0" data-tip="Rated with a 25% margin under the cover estimate,&#10;with balanced use; not proved in Lean">i</span><br><span class="sub">(signatures)</span></th><th>28.0K<br><span class="sub">(subtree of 2<sup>12</sup>)</span></th><th>99.6K<br><span class="sub">(subtree of 2<sup>14</sup>)</span></th><th>398K<br><span class="sub">(subtree of 2<sup>16</sup>)</span></th></tr></thead>
             <tbody>
-              <tr><th>Public data</th><td>1.4&nbsp;GB</td><td>5.1&nbsp;GB</td><td>18.2&nbsp;GB</td></tr>
+              <tr><th>Public data</th><td>1.5&nbsp;GB</td><td>5.4&nbsp;GB</td><td>19.2&nbsp;GB</td></tr>
             </tbody>
           </table>
           </div>

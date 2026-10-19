@@ -16,29 +16,32 @@ retuned for lower lifetimes, the fewest verification compressions and the smalle
 
 | | leanSphincs | leanSphincs-23 | leanSphincs-23, spicy |
 |---|---|---|---|
-| h | 26 | 25 | 24 |
+| h | 26 | 26 | 25 |
 | Few-time signature | FORS, k = 24, a = 10 | FORS, k = 13, a = 12 | WOTS forest (below) |
 | WOTS+C | 64 chains of length 4, target sum 120 | 64 chains of length 4, target sum 128 | same |
-| Lifetime (full / standard / Ledger) | 1.15B / 22M / 210K | 2^23 / 2^21 / 20K | 2^23 / 2^21 / 20K |
-| Signature | 5,684 bytes | 4,148 bytes | 3,636 bytes |
-| Verification | 373 compressions | 272 compressions | 224 compressions |
+| Lifetime, full tree | 2^30 (proved) | 2^26 (rated) | 2^25 (rated) |
+| Lifetime targets (full / standard / Ledger) | 1.15B / 22M / 210K | 2^23 / 2^21 / 20K | 2^23 / 2^21 / 20K |
+| Signature | 5,684 bytes | 4,164 bytes | 3,652 bytes |
+| Verification | 373 compressions | 273 compressions | 225 compressions |
 
-Verification: digest 2 + FORS 163 + WOTS+C 82 + path 25 (spicy: forest 116, path 24). The keygen budgets are
+Verification: digest 2 + FORS 163 + WOTS+C 82 + path 26 (spicy: forest 116, path 25). The keygen budgets are
 the proposal's (Ledger 60 s at 33K compressions/s, weak CPU 2 s at 128M/s, powerful CPU 16 s at 1B/s), so the
 Ledger and standard signers keep subtrees of 2^13 and 2^20 leaves; Ledger signing may take up to 5 s.
-Ledger signing is 155K compressions (4.7 s), estimated lifetimes 40.2K / 2.78M / 54.0M, full keygen 8.1 s.
+Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M, full keygen 16 s.
+The tree height is one level above the minimum: +1 compression doubles the full-tree lifetime, and the full
+keygen uses the proposal's 16 s budget. The full tree is rated 2^26 (estimate 1.08·10^8 with a 25% margin).
 
 **Spicy.** As in the proposal's spicy variant, FORS is replaced by a two-level WOTS forest, here reshaped for
 the lower lifetimes and a 5 s Ledger signing budget, traded for a smaller signature: 3 trees of height 4;
 each leaf is H(R₀, R₁, R₂), the roots of three subtrees of height 5 over WOTS keys of 9 chains of length 3
 that sign a codeword of digit sum 4. The 10-bit table holds all 414 such codewords, sorted as in the
 proposal, the 196 most concentrated 3 times and the others twice. Per tree: 38 compressions, 46 values;
-the digest is 171 bits, one call. WOTS+C is unchanged and the tree is one level lower (h = 24, full keygen
-4.1 s); the Ledger and standard keygens are unchanged. Ledger signing is 144K compressions
-(4.4 s), estimated lifetimes 59.0K / 3.03M / 24.7M.
+the digest is 171 bits, one call. WOTS+C is unchanged and the tree is one level lower (h = 25, full keygen
+8.1 s); the Ledger and standard keygens are unchanged. Ledger signing is 146K compressions
+(4.4 s), estimated lifetimes 66.0K / 3.51M / 49.5M; the full tree is rated 2^25.
 
 **These lifetimes are estimates, not proved in Lean.** They use the cover estimate of the note
-(section 3), and each tier clears its target by at least 25% under it (40.2K, 2.78M and 54.0M), since
+(section 3), and each tier clears its target by at least 25% under it (43.7K, 3.05M and 108M), since
 the proved figures of the proposal sit 4–17% below that estimate.
 
 ## Threshold, leanSphincs-23
@@ -54,25 +57,25 @@ the proposal's. Three changes cut the MPC:
   preimage. Signers grind the randomizer (about 2^30 hashes per signature) until the message picks real
   leaves. About 2.5x less MPC, unchanged verifier.
 - **Balanced use.** The signing service logs every signature and grinds to an instance used fewer than a set
-  number of times, so a kept subtree lasts about 1.7x longer.
+  number of times, so a kept subtree lasts about 1.5x longer.
 
-For a 2-of-3 key lasting about 100K signatures, keygen traffic per operator drops from 2,975 GB to 538 GB.
+For a 2-of-3 key lasting about 100K signatures, keygen traffic per operator drops from 2,975 GB to 568 GB.
 Applied to the proposal's own set, the same changes cut its traffic by about a third (2-of-3 with 2^12 kept
 instances: 172 GB to 108 GB); the page shows these figures in green next to the original threshold table.
 Lifetimes are rated with a 25% margin under the cover estimate, with balanced use; traffic uses the
 proposal's measured bytes per MPC leaf.
 
-| Lifetime (signatures) | 7.7K (2^10) | 28.0K (2^12) | 99.6K (2^14) |
+| Lifetime (signatures) | 8.6K (2^10) | 28.0K (2^12) | 99.6K (2^14) |
 |---|---|---|---|
-| 2-of-3 | 42 GB | 150 GB | 538 GB |
-| 3-of-5 | 50 GB | 180 GB | 646 GB |
-| 4-of-7 | 54 GB | 193 GB | 693 GB |
+| 2-of-3 | 44 GB | 158 GB | 568 GB |
+| 3-of-5 | 53 GB | 189 GB | 681 GB |
+| 4-of-7 | 57 GB | 203 GB | 730 GB |
 
 ## Reproducing
 
 ```
 python3 scripts/sweep_leansphincs_pruned.py --check-tom   # reproduces the proposal's 373 compressions
-python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-23 is the best set under 5 s
+python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-23 is its best set under 5 s, one level taller
 python3 scripts/option_a.py                               # threshold cost of FORS sets with the three changes
 python3 scripts/sweep_leansphincs_forest.py --check-tom   # reproduces the spicy 307 compressions and lifetimes
 python3 scripts/sweep_leansphincs_forest.py --ledger-sign-s 5   # the forest search behind the spicy column
