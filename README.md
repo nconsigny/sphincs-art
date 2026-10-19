@@ -27,7 +27,7 @@ retuned for lower lifetimes, the fewest verification compressions and the smalle
 Verification: digest 2 + FORS 163 + WOTS+C 82 + path 26 (spicy: forest 116, path 25). The keygen budgets are
 the proposal's (Ledger 60 s at 33K compressions/s, weak CPU 2 s at 128M/s, powerful CPU 16 s at 1B/s), so the
 Ledger and standard signers keep subtrees of 2^13 and 2^20 leaves; Ledger signing may take up to 5 s.
-Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M, full keygen 16 s.
+Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M (rated, with the 25% margin: 34.9K / 2.44M / 86.5M), full keygen 16 s.
 The tree height is one level above the minimum: +1 compression doubles the full-tree lifetime, and the full
 keygen uses the proposal's 16 s budget. The full tree is rated 2^26 (estimate 1.08·10^8 with a 25% margin).
 
@@ -38,7 +38,7 @@ that sign a codeword of digit sum 4. The 10-bit table holds all 414 such codewor
 proposal, the 196 most concentrated 3 times and the others twice. Per tree: 38 compressions, 46 values;
 the digest is 171 bits, one call. WOTS+C is unchanged and the tree is one level lower (h = 25, full keygen
 8.1 s); the Ledger and standard keygens are unchanged. Ledger signing is 146K compressions
-(4.4 s), estimated lifetimes 66.0K / 3.51M / 49.5M; the full tree is rated 2^25.
+(4.4 s), estimated lifetimes 66.0K / 3.51M / 49.5M (rated 52.8K / 2.81M / 39.6M); the full tree is rated 2^25.
 
 **These lifetimes are estimates, not proved in Lean.** They use the cover estimate of the note
 (section 3), and each tier clears its target by at least 25% under it (43.7K, 3.05M and 108M), since
