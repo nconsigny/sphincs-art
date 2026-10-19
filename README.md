@@ -19,7 +19,7 @@ retuned for lower lifetimes, the fewest verification compressions and the smalle
 | h | 26 | 26 | 25 |
 | Few-time signature | FORS, k = 24, a = 10 | FORS, k = 13, a = 12 | WOTS forest (below) |
 | WOTS+C | 64 chains of length 4, target sum 120 | 64 chains of length 4, target sum 128 | same |
-| Lifetime, full tree | 2^30 (proved) | 2^26 (rated) | 2^25 (rated) |
+| Lifetime, full tree | 2^30 (proved) | 2^26 (estimate) | 2^25 (estimate) |
 | Lifetime targets (full / standard / Ledger) | 1.15B / 22M / 210K | 2^23 / 2^21 / 20K | 2^23 / 2^21 / 20K |
 | Signature | 5,684 bytes | 4,164 bytes | 3,652 bytes |
 | Verification, BLAKE2s | 373 compressions | 273 compressions | 225 compressions |
@@ -28,9 +28,9 @@ retuned for lower lifetimes, the fewest verification compressions and the smalle
 Verification: digest 2 + FORS 163 + WOTS+C 82 + path 26 (spicy: forest 116, path 25). The keygen budgets are
 the proposal's (Ledger 60 s at 33K compressions/s, weak CPU about 1 s at 256M/s, powerful CPU 16 s at 1B/s), so the
 Ledger and standard signers keep subtrees of 2^13 and 2^20 leaves; Ledger signing may take up to 5 s.
-Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M (rated, with the 25% margin: 34.9K / 2.44M / 86.5M), full keygen 16 s.
+Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M (lowered by the proposal's proof gaps: 38.2K / 2.87M / 103M), full keygen 16 s.
 The tree height is one level above the minimum: +1 compression doubles the full-tree lifetime, and the full
-keygen uses the proposal's 16 s budget. The full tree is rated 2^26 (estimate 1.08·10^8 with a 25% margin).
+keygen uses the proposal's 16 s budget. The full tree gives 2^26 (estimate 1.08·10^8, 1.03·10^8 after the 4% proof gap).
 
 **Spicy.** As in the proposal's spicy variant, FORS is replaced by a two-level WOTS forest, here reshaped for
 the lower lifetimes and a 5 s Ledger signing budget, traded for a smaller signature: 3 trees of height 4;
@@ -39,11 +39,13 @@ that sign a codeword of digit sum 4. The 10-bit table holds all 414 such codewor
 proposal, the 196 most concentrated 3 times and the others twice. Per tree: 38 compressions, 46 values;
 the digest is 171 bits, one call. WOTS+C is unchanged and the tree is one level lower (h = 25, full keygen
 8.1 s); the Ledger and standard keygens are unchanged. Ledger signing is 146K compressions
-(4.4 s), estimated lifetimes 66.0K / 3.51M / 49.5M (rated 52.8K / 2.81M / 39.6M); the full tree is rated 2^25.
+(4.4 s), estimated lifetimes 66.0K / 3.51M / 49.5M (lowered by the proof gaps: 56.4K / 3.20M / 47.6M); the full tree gives 2^25.
 
 **These lifetimes are estimates, not proved in Lean.** They use the cover estimate of the note
-(section 3), and each tier clears its target by at least 25% under it (43.7K, 3.05M and 108M), since
-the proved figures of the proposal sit 4–17% below that estimate.
+(section 3): the exact success probability of the cover attack, which for a plain FORS is a closed formula.
+The proposal's Lean proofs land 4–17% below that estimate, because they must also bound adaptive forgers
+and the WOTS+C neighbour route; we apply the proposal's measured gap at the same subtree size (4% for the
+full tree, 6% at 2^20, 13% at 2^13). Each tier still clears its target (20K, 2^21, 2^23).
 
 ## Keccak-256
 
@@ -71,10 +73,10 @@ the proposal's. Three changes cut the MPC:
 For a 2-of-3 key lasting about 100K signatures, keygen traffic per operator drops from 2,975 GB to 568 GB.
 Applied to the proposal's own set, the same changes cut its traffic by about a third (2-of-3 with 2^12 kept
 instances: 172 GB to 108 GB); the page shows these figures in green next to the original threshold table.
-Lifetimes are rated with a 25% margin under the cover estimate, with balanced use; traffic uses the
+Lifetimes are the cover estimate with balanced use, lowered by the proposal's proof gap at the same subtree size; traffic uses the
 proposal's measured bytes per MPC leaf.
 
-| Lifetime (signatures) | 8.6K (2^10) | 28.0K (2^12) | 99.6K (2^14) |
+| Lifetime (signatures) | 9.1K (2^10) | 30.1K (2^12) | 109K (2^14) |
 |---|---|---|---|
 | 2-of-3 | 44 GB | 158 GB | 568 GB |
 | 3-of-5 | 53 GB | 189 GB | 681 GB |
