@@ -2,19 +2,19 @@
 
 Unofficial fork of [sphincs.art](https://sphincs.art), Tom Wambsgans' leanSphincs proposal
 ([source](https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/tree/main/site)), with one
-addition: a **leanSphincs-23** column and the **One signer, leanSphincs-23** and **Threshold, leanSphincs-23** sections.
+addition: a **leanSphincs-S** column and the **One signer, leanSphincs-S** and **Threshold, leanSphincs-S** sections.
 
 Live page: https://nconsigny.github.io/sphincs-art/
 
 Everything else on the page — the proposal, the vanilla/spicy variants, the diagram, the threshold
 section — is the original. The first commit is an unmodified copy of upstream; the later ones hold the changes.
 
-## leanSphincs-23
+## leanSphincs-S
 
 Same scheme (one XMSS layer, WOTS+C, FORS with no root hash, hypertree pruning, BLAKE2s compressions),
 retuned for lower lifetimes, the fewest verification compressions and the smallest signature:
 
-| | leanSphincs | leanSphincs-23 | leanSphincs-23, spicy |
+| | leanSphincs | leanSphincs-S | leanSphincs-S, spicy |
 |---|---|---|---|
 | h | 26 | 26 | 25 |
 | Few-time signature | FORS, k = 24, a = 10 | FORS, k = 13, a = 12 | WOTS forest (below) |
@@ -22,10 +22,11 @@ retuned for lower lifetimes, the fewest verification compressions and the smalle
 | Lifetime, full tree | 2^30 (proved) | 2^26 (rated) | 2^25 (rated) |
 | Lifetime targets (full / standard / Ledger) | 1.15B / 22M / 210K | 2^23 / 2^21 / 20K | 2^23 / 2^21 / 20K |
 | Signature | 5,684 bytes | 4,164 bytes | 3,652 bytes |
-| Verification | 373 compressions | 273 compressions | 225 compressions |
+| Verification, BLAKE2s | 373 compressions | 273 compressions | 225 compressions |
+| Verification, Keccak-256 | 354 permutations | 259 permutations | 201 permutations |
 
 Verification: digest 2 + FORS 163 + WOTS+C 82 + path 26 (spicy: forest 116, path 25). The keygen budgets are
-the proposal's (Ledger 60 s at 33K compressions/s, weak CPU 2 s at 128M/s, powerful CPU 16 s at 1B/s), so the
+the proposal's (Ledger 60 s at 33K compressions/s, weak CPU about 1 s at 256M/s, powerful CPU 16 s at 1B/s), so the
 Ledger and standard signers keep subtrees of 2^13 and 2^20 leaves; Ledger signing may take up to 5 s.
 Ledger signing is 159K compressions (4.8 s), estimated lifetimes 43.7K / 3.05M / 108M (rated, with the 25% margin: 34.9K / 2.44M / 86.5M), full keygen 16 s.
 The tree height is one level above the minimum: +1 compression doubles the full-tree lifetime, and the full
@@ -44,10 +45,18 @@ the digest is 171 bits, one call. WOTS+C is unchanged and the tree is one level 
 (section 3), and each tier clears its target by at least 25% under it (43.7K, 3.05M and 108M), since
 the proved figures of the proposal sit 4–17% below that estimate.
 
-## Threshold, leanSphincs-23
+## Keccak-256
+
+The page follows the proposal's BLAKE2s / Keccak-256 switch. Keccak figures use the cost model of the proposal's
+`keccak` branch (`scripts/keccak_model.py` reproduces its 354 and 267 permutations): one Keccak-f permutation per
+136-byte block, and the WOTS+C encoding absorbs the few-time tops directly (no separate few-time key hash).
+Same parameters for both hashes. Speeds: Ledger 5.8K permutations/s, weak CPU 128M/s, powerful CPU 512M/s, so
+Keccak signing on a Ledger takes 27 s (FORS) or 24 s (forest), and Ledger keygen 5.5 min.
+
+## Threshold, leanSphincs-S
 
 Same ceremony as the proposal's threshold mode (adapted from PRAWNS) and the same verifier, for the FORS
-variant. Keygen has to hash every FORS secret inside an MPC. leanSphincs-23 is tuned for verification cost
+variant. Keygen has to hash every FORS secret inside an MPC. leanSphincs-S is tuned for verification cost
 and signature size, so its FORS supports fewer signatures per instance and its threshold keys cost more than
 the proposal's. Three changes cut the MPC:
 
@@ -75,9 +84,10 @@ proposal's measured bytes per MPC leaf.
 
 ```
 python3 scripts/sweep_leansphincs_pruned.py --check-tom   # reproduces the proposal's 373 compressions
-python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-23 is its best set under 5 s, one level taller
+python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-S is its best set under 5 s, one level taller
 python3 scripts/option_a.py                               # threshold cost of FORS sets with the three changes
 python3 scripts/sweep_leansphincs_forest.py --check-tom   # reproduces the spicy 307 compressions and lifetimes
+python3 scripts/keccak_model.py                          # Keccak-256 costs (the proposal's keccak branch model)
 python3 scripts/sweep_leansphincs_forest.py --ledger-sign-s 5   # the forest search behind the spicy column
 ```
 
