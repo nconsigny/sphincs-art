@@ -2,19 +2,20 @@
 
 Unofficial fork of [sphincs.art](https://sphincs.art), Tom Wambsgans' leanSphincs proposal
 ([source](https://github.com/TomWambsgans/leanXMSS-leanSPHINCS-candidates/tree/main/site)), with one
-addition: a **leanSphincs-S** column and the **One signer, leanSphincs-S** and **Threshold, leanSphincs-S** sections.
+two additions: a **leanSphincs-s** column with the **One signer, leanSphincs-s** and **Threshold, leanSphincs-s** sections, and a
+**leanSphincs-f** column with its **One signer, leanSphincs-f** table (s = small, f = fast, as in SPHINCS+).
 
 Live page: https://nconsigny.github.io/sphincs-art/
 
 Everything else on the page — the proposal, the vanilla/spicy variants, the diagram, the threshold
 section — is the original. The first commit is an unmodified copy of upstream; the later ones hold the changes.
 
-## leanSphincs-S
+## leanSphincs-s
 
 Same scheme (one XMSS layer, WOTS+C, FORS with no root hash, hypertree pruning, BLAKE2s compressions),
 retuned for lower lifetimes, the fewest verification compressions and the smallest signature:
 
-| | leanSphincs | leanSphincs-S | leanSphincs-S, spicy |
+| | leanSphincs | leanSphincs-s | leanSphincs-s, spicy |
 |---|---|---|---|
 | h | 26 | 26 | 25 |
 | Few-time signature | FORS, k = 24, a = 10 | FORS, k = 13, a = 12 | WOTS forest (below) |
@@ -47,6 +48,33 @@ The proposal's Lean proofs land 4–17% below that estimate, because they must a
 and the WOTS+C neighbour route; we apply the proposal's measured gap at the same subtree size (4% for the
 full tree, 6% at 2^20, 13% at 2^13). Each tier still clears its target (20K, 2^21, 2^23).
 
+## leanSphincs-f
+
+leanSphincs-s retuned for signing speed: the same scheme, keygen and tiers, with smaller FORS trees and a WOTS+C target
+sum closer to the mean, within a verification budget of 290 Keccak-f permutations. It keeps leanSphincs-s's lifetime
+floors (at least 20K signatures on the Ledger tier, at least 10^8 for the full tree).
+
+| | leanSphincs-s | leanSphincs-f |
+|---|---|---|
+| h | 26 | 26 |
+| FORS | k = 13, a = 12 | k = 20, a = 9 |
+| WOTS+C | 64 chains of length 4, target sum 128 | 64 chains of length 4, target sum 122 |
+| Signature | 4,164 bytes | 4,660 bytes |
+| Verification, Keccak-256 | 259 permutations | 290 permutations |
+| Verification, BLAKE2s | 273 compressions | 307 compressions |
+| Signing, Keccak-256 (Ledger / weak CPU / powerful CPU) | 159K / 155K / 178K permutations | 38K / 35K / 57K permutations |
+| Signing time, Keccak-256 | 27 s / 1.2 ms / 0.35 ms | 6.6 s / 0.27 ms / 0.11 ms |
+| Lifetime (Ledger / standard / full, after the proof gaps) | 38.2K / 2.87M / 103M | 31.5K / 2.78M / 119M |
+
+Verification, Keccak-256: digest 1 + FORS 180 + WOTS+C 83 + path 26 (BLAKE2s: digest 2 + FORS 191 + WOTS+C 88 + path 26).
+Signing is 4.1x faster on the Ledger: FORS rebuilds 20 trees of 512 leaves instead of 13 of 4,096, and the counter
+search takes about 1,570 tries instead of 14,700. It is the fastest-signing FORS set with 64 chains of length 4 at h = 26 under the 290-permutation
+budget, the floors above and an unchanged keygen. In BLAKE2s, Ledger signing is 38K compressions (1.2 s). There is no
+spicy variant: the column is the same in both views. Lifetimes are estimates, as for leanSphincs-s.
+
+An on-chain Keccak-256 verifier, signers and test vectors are in
+[nconsigny/SPHINCS-](https://github.com/nconsigny/SPHINCS-) (`src/keccak/LeanSphincs-FAsm.sol`, 44 K gas per verification).
+
 ## Keccak-256
 
 The page follows the proposal's BLAKE2s / Keccak-256 switch. Keccak figures use the cost model of the proposal's
@@ -55,10 +83,10 @@ The page follows the proposal's BLAKE2s / Keccak-256 switch. Keccak figures use 
 Same parameters for both hashes. Speeds: Ledger 5.8K permutations/s, weak CPU 128M/s, powerful CPU 512M/s, so
 Keccak signing on a Ledger takes 27 s (FORS) or 24 s (forest), and Ledger keygen 5.5 min.
 
-## Threshold, leanSphincs-S
+## Threshold, leanSphincs-s
 
 Same ceremony as the proposal's threshold mode (adapted from PRAWNS) and the same verifier, for the FORS
-variant. Keygen has to hash every FORS secret inside an MPC. leanSphincs-S is tuned for verification cost
+variant. Keygen has to hash every FORS secret inside an MPC. leanSphincs-s is tuned for verification cost
 and signature size, so its FORS supports fewer signatures per instance and its threshold keys cost more than
 the proposal's. Three changes cut the MPC:
 
@@ -86,10 +114,10 @@ proposal's measured bytes per MPC leaf.
 
 ```
 python3 scripts/sweep_leansphincs_pruned.py --check-tom   # reproduces the proposal's 373 compressions
-python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-S is its best set under 5 s, one level taller
+python3 scripts/sweep_leansphincs_pruned.py --lg-w 2      # the FORS search; leanSphincs-s is its best set under 5 s, one level taller
 python3 scripts/option_a.py                               # threshold cost of FORS sets with the three changes
 python3 scripts/sweep_leansphincs_forest.py --check-tom   # reproduces the spicy 307 compressions and lifetimes
-python3 scripts/keccak_model.py                          # Keccak-256 costs (the proposal's keccak branch model)
+python3 scripts/keccak_model.py                          # Keccak-256 costs (the proposal's keccak branch model), incl. leanSphincs-f
 python3 scripts/sweep_leansphincs_forest.py --ledger-sign-s 5   # the forest search behind the spicy column
 ```
 

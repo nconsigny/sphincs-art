@@ -39,8 +39,9 @@ def forest(h, F, th, m, s, c, w, D, bits, T):
 if __name__ == "__main__":
     for name, (vv, t) in (("Tom FORS (check 354)", fors(26, 24, 10, 120)),
                           ("Tom forest (check 267)", forest(26, 8, 4, 2, 3, 6, 5, 5, 208, 123)),
-                          ("leanSphincs-S FORS h=26 k=13 a=12 T=128", fors(26, 13, 12, 128)),
-                          ("leanSphincs-S forest h=25 T=128", forest(25, 3, 4, 3, 5, 9, 3, 4, 147, 128))):
+                          ("leanSphincs-s FORS h=26 k=13 a=12 T=128", fors(26, 13, 12, 128)),
+                          ("leanSphincs-f FORS h=26 k=20 a=9 T=122", fors(26, 20, 9, 122)),
+                          ("leanSphincs-s forest h=25 T=128", forest(25, 3, 4, 3, 5, 9, 3, 4, 147, 128))):
         print(f"{name}: verify {vv} permutations")
         for tier, (kg, kgs, sg, sgs) in t.items():
             print(f"   {tier:8s} keygen {kg:,} ({kgs:.3g} s)  sign {sg:,.0f} ({sgs*1e3:.4g} ms)")
